@@ -1,6 +1,10 @@
 local elements = {}
 
-elements.Spacer = {}
-elements.Button = {}
+elements.Spacer = {
+  txt = "-"
+}
+elements.Button = {
+  txt = "G"
+}
 
 return elements
