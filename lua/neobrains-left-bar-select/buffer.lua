@@ -6,7 +6,7 @@ local buffer = {}
 function buffer.gen_content(user_config, height)
 	local content = {}
 	function content.insert(thing)
-		table.insert(conent, thing)
+		table.insert(content, thing)
 	end
 	local y = 0
 
