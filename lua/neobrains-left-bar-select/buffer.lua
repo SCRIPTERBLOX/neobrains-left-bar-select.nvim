@@ -12,32 +12,37 @@ function buffer.gen_content(user_config, height)
 
 	local buttons = user_config.buttons
 	
-	for _, v in pairs(buttons.top) do
-		content.insert("")
-		content.insert(" " .. v.txt .. " ")
-		content.insert("")
-		
-		y = y + 1
-	end
-
-	local center = math.floor(height/2)
-	local center_element_rows = (#buttons.center)*3
-	local up = math.floor(center_element_rows/2)
-	local center_start = center-up
-	local rows_til_there = center_start - y
-
-	if rows_til_there > 0 then
-		for i = 1, rows_til_there do
+	if content.top then
+		for _, v in pairs(buttons.top) do
 			content.insert("")
+			content.insert(" " .. v.txt .. " ")
+			content.insert("")
+		
 			y = y + 1
 		end
 	end
 
-	for _, v in pairs(buttons.center) do
-		content.insert("")
-		content.insert(" " .. buttons.txt .. " ")
-		content.insert("")
-		y = y + 1
+
+	if content.center then
+		local center = math.floor(height/2)
+		local center_element_rows = (#buttons.center)*3
+		local up = math.floor(center_element_rows/2)
+		local center_start = center-up
+		local rows_til_there = center_start - y
+
+		if rows_til_there > 0 then
+			for i = 1, rows_til_there do
+				content.insert("")
+				y = y + 1
+			end
+		end
+
+		for _, v in pairs(buttons.center) do
+			content.insert("")
+			content.insert(" " .. buttons.txt .. " ")
+			content.insert("")
+			y = y + 1
+		end
 	end
 
 	return content
