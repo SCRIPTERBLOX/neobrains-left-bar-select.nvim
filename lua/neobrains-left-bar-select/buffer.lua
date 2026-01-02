@@ -13,7 +13,7 @@ function buffer.gen_content(user_config, height)
 		content.insert(" " .. v.txt .. " ")
 		content.insert("")
 		
-		y += 1
+		y++
 	end
 
 	local center = math.rounds(height/2)
@@ -25,7 +25,7 @@ function buffer.gen_content(user_config, height)
 	if rows_til_there > 0 then
 		for i = 1, rows_til_there do
 			content.insert("")
-			y += 1
+			y++
 		end
 	end
 
@@ -33,7 +33,7 @@ function buffer.gen_content(user_config, height)
 		content.insert("")
 		content.insert(" " .. buttons.txt .. " ")
 		content.insert("")
-		y += 1
+		y++
 	end
 
 	return content
