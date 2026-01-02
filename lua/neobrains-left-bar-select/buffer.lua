@@ -1,4 +1,5 @@
 local config = require("neobrains-left-bar-select.config")
+local config = require("neobrains-left-bar-select.utils")
 
 local buffer = {}
 
