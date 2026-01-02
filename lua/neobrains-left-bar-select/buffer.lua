@@ -41,8 +41,6 @@ function buffer.gen_content(user_config, height)
 end
 
 function buffer.create(user_config)
-	local cfg = vim.tbl_deep_extend("force", config.default_config, user_config or {})
-
 	local win_height = vim.api.nvim_win_get_height(0)
 	local win_width = vim.api.nvim_win_get_width(0)
 
