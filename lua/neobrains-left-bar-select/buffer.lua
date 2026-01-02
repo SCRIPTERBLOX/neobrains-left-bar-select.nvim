@@ -56,3 +56,5 @@ function buffer.create(user_config)
 
 	return buf, lines
 end
+
+return buffer
