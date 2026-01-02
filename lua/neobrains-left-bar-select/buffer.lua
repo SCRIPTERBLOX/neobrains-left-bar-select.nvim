@@ -44,7 +44,7 @@ function buffer.create(user_config)
 	local win_height = vim.api.nvim_win_get_height(0)
 	local win_width = vim.api.nvim_win_get_width(0)
 
-	local lines = utils.center_content(self.gen_content(user_config, win_height), win_width, config.margin_top)
+	local lines = utils.center_content(buffer.gen_content(user_config, win_height), win_width, config.margin_top)
 
 	local buf = vim.api.nvim_create_buf()
 	vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
