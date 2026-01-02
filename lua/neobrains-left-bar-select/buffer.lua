@@ -54,7 +54,8 @@ function buffer.create(user_config)
 
 	local lines = utils.center_content(buffer.gen_content(user_config, win_height), win_width, user_config.margin_top)
 
-	local buf = vim.api.nvim_create_buf()
+	vim.cmd("vsplit")
+	local buf = vim.api.nvim_get_current_buf()
 	vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
 	vim.api.nvim_buf_set_option(buf, "modifiable", false)
 	vim.api.nvim_buf_set_option(buf, "filetype", "left-bar")
