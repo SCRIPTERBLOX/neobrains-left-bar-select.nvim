@@ -20,9 +20,9 @@ function buffer.gen_content(user_config, height)
 		y = y + 1
 	end
 
-	local center = math.rounds(height/2)
+	local center = math.floor(height/2)
 	local center_element_rows = (#buttons.center)*3
-	local up = math.rounds(center_element_rows/2)
+	local up = math.floor(center_element_rows/2)
 	local center_start = center-up
 	local rows_til_there = center_start - y
 
