@@ -15,5 +15,6 @@ function utils.center_content(content, win_width, win_height)
 	end
 
 	return lines
+end
 
 return utils
