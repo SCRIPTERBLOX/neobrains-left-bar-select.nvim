@@ -4,8 +4,13 @@ local config = {}
 
 config.default_config = {
   buttons = {
-    
+    top = {
+      elements.Button,
+      elements.Button,
+      elements.Spacer
+    }
   },
+  margin_top = 1,
   width = 3
 }
 
