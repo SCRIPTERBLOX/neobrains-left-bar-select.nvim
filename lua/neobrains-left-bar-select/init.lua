@@ -7,7 +7,7 @@ function M.init(user_config)
 
 	local buf, lines = buffer.create(cfg)
 
-	autocmds.setup_auto_recreate(buf, lines, cfg)
+	-- autocmds.setup_auto_recreate(buf, lines, cfg)
 
 	return buf
 end
