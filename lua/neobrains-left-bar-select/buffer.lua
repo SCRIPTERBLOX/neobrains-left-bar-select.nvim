@@ -5,18 +5,14 @@ local buffer = {}
 
 function buffer.gen_content(user_config, height)
 	local content = {}
-	function content.insert(thing)
-		table.insert(content, thing)
-	end
 	local y = 0
-
 	local buttons = user_config.buttons
 	
 	if content.top then
 		for _, v in pairs(buttons.top) do
-			content.insert("")
-			content.insert(" " .. v.txt .. " ")
-			content.insert("")
+			table.insert(content, "")
+			table.insert(content, " " .. v.txt .. " ")
+			table.insert(content, "")
 		
 			y = y + 1
 		end
@@ -32,15 +28,15 @@ function buffer.gen_content(user_config, height)
 
 		if rows_til_there > 0 then
 			for i = 1, rows_til_there do
-				content.insert("")
+				table.insert(content, "")
 				y = y + 1
 			end
 		end
 
 		for _, v in pairs(buttons.center) do
-			content.insert("")
-			content.insert(" " .. buttons.txt .. " ")
-			content.insert("")
+			table.insert(content, "")
+			table.insert(content, " " .. v.txt .. " ")
+			table.insert(content, "")
 			y = y + 1
 		end
 	end
@@ -65,7 +61,7 @@ function buffer.create(user_config)
 	vim.api.nvim_buf_set_option(buf, "buftype", "nofile")
 	vim.api.nvim_buf_set_name(buf, "left-bar")
 
-	return buf, lines
+	return buf
 end
 
 return buffer
