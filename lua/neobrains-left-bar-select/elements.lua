@@ -1,7 +1,7 @@
 local elements = {}
 
 elements.Spacer = {
-  txt = "-"
+  txt = "-",
   action = function()
     -- Do nothing
   end
