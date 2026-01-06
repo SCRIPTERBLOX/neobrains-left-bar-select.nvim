@@ -1,17 +1,15 @@
 local elements = require("neobrains-left-bar-select.elements")
 
-local config = {}
+local M = {}
 
-config.default_config = {
+M.default_config = {
   buttons = {
     top = {
-      elements.Button,
-      elements.Button,
-      elements.Spacer
+      elements.Button
     }
   },
   margin_top = 1,
   width = 3
 }
 
-return config
+return M

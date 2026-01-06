@@ -1,6 +1,6 @@
-local utils = {}
+local M = {}
 
-function utils.center_content(content, win_width, win_height)
+function M.center_content(content, win_width, win_height)
 	local lines = {}
 	local padding = math.floor((win_height - #content) / 2)
 
@@ -17,4 +17,4 @@ function utils.center_content(content, win_width, win_height)
 	return lines
 end
 
-return utils
+return M

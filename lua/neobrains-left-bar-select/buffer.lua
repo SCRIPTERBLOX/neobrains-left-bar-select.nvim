@@ -1,9 +1,9 @@
 local config = require("neobrains-left-bar-select.config")
 local utils = require("neobrains-left-bar-select.utils")
 
-local buffer = {}
+local M = {}
 
-function buffer.gen_content(user_config, height)
+function M.gen_content(user_config, height)
 	local content = {}
 	local y = 0
 	local buttons = user_config.buttons
@@ -44,7 +44,7 @@ function buffer.gen_content(user_config, height)
 	return content
 end
 
-function buffer.create(user_config)
+function M.create(user_config)
 	local win_height = vim.api.nvim_win_get_height(0)
 	local win_width = vim.api.nvim_win_get_width(0)
 
@@ -64,4 +64,4 @@ function buffer.create(user_config)
 	return buf
 end
 
-return buffer
+return M

@@ -1,13 +1,13 @@
-local elements = {}
+local M = {}
 
-elements.Spacer = {
+M.Spacer = {
   txt = "-",
   action = function()
     -- Do nothing
   end
 }
-elements.Button = {
+M.Button = {
   txt = "G"
 }
 
-return elements
+return M
