@@ -10,9 +10,9 @@ function M.gen_content(user_config, height)
 	
 	if buttons.top then
 		for _, v in pairs(buttons.top) do
-			table.insert(content, "╭───╮ ")
+			table.insert(content, "╭───╮")
 			table.insert(content, "⎪ " .. v.txt .. " ⎪")
-			table.insert(content, "╰───╯ ")
+			table.insert(content, "╰───╯")
 		
 			y = y + 1
 		end
