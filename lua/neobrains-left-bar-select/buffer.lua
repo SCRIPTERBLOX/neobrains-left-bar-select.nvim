@@ -8,7 +8,7 @@ function M.gen_content(user_config, height)
 	local y = 0
 	local buttons = user_config.buttons
 	
-	if content.top then
+	if buttons.top then
 		for _, v in pairs(buttons.top) do
 			table.insert(content, "")
 			table.insert(content, " " .. v.txt .. " ")
@@ -19,7 +19,7 @@ function M.gen_content(user_config, height)
 	end
 
 
-	if content.center then
+	if buttons.center then
 		local center = math.floor(height/2)
 		local center_element_rows = (#buttons.center)*3
 		local up = math.floor(center_element_rows/2)
