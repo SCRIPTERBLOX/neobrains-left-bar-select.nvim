@@ -10,9 +10,9 @@ function M.gen_content(user_config, height)
 	
 	if buttons.top then
 		for _, v in pairs(buttons.top) do
-			table.insert(content, "╭───╮")
-			table.insert(content, "⎪ " .. v.txt .. " ⎪")
-			table.insert(content, "╰───╯")
+			table.insert(content, "╭" .."───".. "╮")
+			table.insert(content, "⎪ "..v.txt.." ⎪")
+			table.insert(content, "╰" .."───".. "╯")
 		
 			y = y + 1
 		end
@@ -52,10 +52,13 @@ function M.create(user_config)
 
 	local buf = vim.api.nvim_create_buf(false, true)
 	vim.cmd("vsplit")
-	vim.api.nvim_win_set_buf(0, buf)
+	local win = vim.api.nvim_get_current_win()
+	vim.api.nvim_win_set_option(win, "winfixwidth", true)
+	vim.api.nvim_win_set_option(win, "winfixheight", true)
+	vim.api.nvim_win_set_buf(win, buf)
 	vim.api.nvim_buf_set_option(buf, "modifiable", true)
 	vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
-	vim.api.nvim_win_set_width(0, 5)
+	vim.api.nvim_win_set_width(win, 5)
 	vim.api.nvim_buf_set_option(buf, "modifiable", false)
 	vim.api.nvim_buf_set_option(buf, "filetype", "left-bar")
 	vim.api.nvim_buf_set_option(buf, "buftype", "nofile")
