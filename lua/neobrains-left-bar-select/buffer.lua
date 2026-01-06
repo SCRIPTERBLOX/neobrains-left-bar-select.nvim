@@ -5,6 +5,7 @@ local M = {}
 
 function M.gen_content(user_config, height)
 	local content = {}
+	local button_map = {}
 	local y = 0
 	local buttons = user_config.buttons
 	
@@ -13,7 +14,13 @@ function M.gen_content(user_config, height)
 			table.insert(content, "╭" .."───".. "╮")
 			table.insert(content, "⎪ "..v.txt.." ⎪")
 			table.insert(content, "╰" .."───".. "╯")
-		
+			
+			-- Map button to its lines (button spans 3 lines: top, middle, bottom)
+			local start_line = #content - 2
+			button_map[start_line] = v
+			button_map[start_line + 1] = v
+			button_map[start_line + 2] = v
+			
 			y = y + 1
 		end
 	end
@@ -34,21 +41,28 @@ function M.gen_content(user_config, height)
 		end
 
 		for _, v in pairs(buttons.center) do
-			table.insert(content, "")
-			table.insert(content, " " .. v.txt .. " ")
-			table.insert(content, "")
+			table.insert(content, "╭" .."───".. "╮")
+			table.insert(content, "⎪ "..v.txt.." ⎪")
+			table.insert(content, "╰" .."───".. "╯")
+			
+			-- Map button to its lines (button spans 3 lines: top, middle, bottom)
+			local start_line = #content - 2
+			button_map[start_line] = v
+			button_map[start_line + 1] = v
+			button_map[start_line + 2] = v
+			
 			y = y + 1
 		end
 	end
 
-	return content
+	return content, button_map
 end
 
 function M.create(user_config)
 	local win_height = vim.api.nvim_win_get_height(0)
 	local win_width = vim.api.nvim_win_get_width(0)
 
-	local lines = M.gen_content(user_config, win_height)--utils.center_content(M.gen_content(user_config, win_height), win_width, user_config.margin_top)
+	local lines, button_map = M.gen_content(user_config, win_height)--utils.center_content(M.gen_content(user_config, win_height), win_width, user_config.margin_top)
 
 	local buf = vim.api.nvim_create_buf(false, true)
 	vim.cmd("vsplit")
@@ -64,7 +78,38 @@ function M.create(user_config)
 	vim.api.nvim_buf_set_option(buf, "buftype", "nofile")
 	vim.api.nvim_buf_set_name(buf, "left-bar")
 
+	-- Setup button action handlers
+	M.setup_actions(buf, win, button_map)
+
 	return buf
+end
+
+function M.setup_actions(buf, win, button_map)
+	-- Handle Enter key press
+	vim.api.nvim_buf_set_keymap(buf, "n", "<CR>", "", {
+		callback = function()
+			local cursor_line = vim.api.nvim_win_get_cursor(win)[1] + 1 -- Convert to 1-based
+			local button = button_map[cursor_line]
+			if button and button.action then
+				button.action()
+			end
+		end,
+		desc = "Execute button action"
+	})
+
+	-- Handle mouse click
+	vim.api.nvim_buf_set_keymap(buf, "n", "<LeftMouse>", "", {
+		callback = function()
+			local mouse_pos = vim.fn.getmousepos()
+			if mouse_pos.winid == win then
+				local button = button_map[mouse_pos.line]
+				if button and button.action then
+					button.action()
+				end
+			end
+		end,
+		desc = "Execute button action on click"
+	})
 end
 
 return M

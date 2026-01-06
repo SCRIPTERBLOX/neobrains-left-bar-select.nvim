@@ -8,6 +8,9 @@ M.Spacer = {
 }
 M.Button = {
   txt = "G"
+  action = function()
+  	-- Like this
+  end
 }
 
 return M
