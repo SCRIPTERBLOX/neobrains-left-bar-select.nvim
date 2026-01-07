@@ -73,77 +73,47 @@ function M.create(user_config)
 	vim.api.nvim_buf_set_option(buf, "modifiable", true)
 	vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
 	vim.api.nvim_win_set_width(win, 5)
-	
-	-- Setup button action handlers while buffer is still modifiable
-	M.setup_actions(buf, win, button_map)
-	
 	vim.api.nvim_buf_set_option(buf, "modifiable", false)
 	vim.api.nvim_buf_set_option(buf, "filetype", "left-bar")
 	vim.api.nvim_buf_set_option(buf, "buftype", "nofile")
 	vim.api.nvim_buf_set_name(buf, "left-bar")
 
+	-- Setup button action handlers (will handle modifiable state internally)
+	M.setup_actions(buf, win, button_map)
+
 	return buf
 end
 
 function M.setup_actions(buf, win, button_map)
-	-- Store button data globally for handling
-	_G.LeftBarButtonMap = button_map
-	_G.LeftBarButtonWin = win
-	_G.LeftBarButtonBuf = buf
-	_G.LeftBarHandlingInput = false
-
-	-- Set up global Enter key handler
-	vim.keymap.set("", "<CR>", function()
-		if _G.LeftBarHandlingInput then
-			return
-		end
-		
-		local current_win = vim.api.nvim_get_current_win()
-		local current_buf = vim.api.nvim_get_current_buf()
-		
-		-- Check if we're in the button window
-		if current_win == _G.LeftBarButtonWin and current_buf == _G.LeftBarButtonBuf then
-			local cursor_line = vim.api.nvim_win_get_cursor(current_win)[1]
-			local button = _G.LeftBarButtonMap[cursor_line]
+	-- Make buffer temporarily modifiable to set keymaps
+	vim.api.nvim_buf_set_option(buf, "modifiable", true)
+	
+	-- Handle Enter key press
+	vim.api.nvim_buf_set_keymap(buf, "n", "<CR>", "", {
+		callback = function()
+			local cursor_line = vim.api.nvim_win_get_cursor(win)[1]
+			local button = button_map[cursor_line]
 			if button and button.action then
-				_G.LeftBarHandlingInput = true
 				button.action()
-				_G.LeftBarHandlingInput = false
-				return
 			end
-		end
-		
-		-- Perform normal Enter behavior
-		_G.LeftBarHandlingInput = true
-		vim.cmd("normal! <CR>")
-		_G.LeftBarHandlingInput = false
-	end, { desc = "Global Enter handler for button actions" })
+		end,
+		desc = "Execute button action"
+	})
 
-	-- Set up global mouse handler
-	vim.keymap.set("", "<LeftMouse>", function()
-		if _G.LeftBarHandlingInput then
-			return
-		end
-		
-		local mouse_pos = vim.fn.getmousepos()
-		local clicked_win = vim.fn.win_getid(mouse_pos.winid)
-		
-		-- Check if click is in our button window
-		if clicked_win == _G.LeftBarButtonWin then
-			local button = _G.LeftBarButtonMap[mouse_pos.line]
+	-- Handle mouse clicks in the button window
+	vim.api.nvim_buf_set_keymap(buf, "n", "<LeftMouse>", "", {
+		callback = function()
+			local mouse_pos = vim.fn.getmousepos()
+			local button = button_map[mouse_pos.line]
 			if button and button.action then
-				_G.LeftBarHandlingInput = true
 				button.action()
-				_G.LeftBarHandlingInput = false
-				return
 			end
-		end
-		
-		-- Perform normal mouse behavior
-		_G.LeftBarHandlingInput = true
-		vim.fn.feedkeys(vim.api.nvim_replace_termcodes("<LeftMouse>", true, false, true))
-		_G.LeftBarHandlingInput = false
-	end, { desc = "Global mouse handler for button clicks" })
+		end,
+		desc = "Execute button action on click"
+	})
+	
+	-- Make buffer non-modifiable again
+	vim.api.nvim_buf_set_option(buf, "modifiable", false)
 end
 
 return M
