@@ -107,7 +107,7 @@ function M.setup_actions(buf, win, button_map)
 			local button = button_map[mouse_pos.line]
 			if button and button.action then
 				button.action()
-				vim.cmd("wincmd r")
+				vim.cmd("wincmd l")
 				return -- Don't process normal mouse behavior
 			end
 		end,
