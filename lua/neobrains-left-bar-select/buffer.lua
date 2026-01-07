@@ -107,10 +107,8 @@ function M.setup_actions(buf, win, button_map)
 			local button = button_map[mouse_pos.line]
 			if button and button.action then
 				button.action()
+				vim.cmd("wincmd r")
 				return -- Don't process normal mouse behavior
-			else
-				-- If not clicking on a button, let normal mouse behavior happen
-				vim.cmd("normal! <LeftMouse>")
 			end
 		end,
 		desc = "Execute button action on click"
