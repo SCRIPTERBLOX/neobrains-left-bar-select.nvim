@@ -114,36 +114,6 @@ function M.setup_actions(buf, win, button_map)
 	
 	-- Make buffer non-modifiable again
 	vim.api.nvim_buf_set_option(buf, "modifiable", false)
-
-	-- Store button data for global mouse handler
-	_G.LeftBarButtonMap = button_map
-	_G.LeftBarButtonWin = win
-
-	-- Set up a simple global mouse handler that only handles button window clicks
-	vim.api.nvim_create_autocmd("VimEnter", {
-		once = true,
-		callback = function()
-			vim.on_key(function(key, typed)
-				if key == "<LeftMouse>" then
-					local mouse_pos = vim.fn.getmousepos()
-					local clicked_win = vim.fn.win_getid(mouse_pos.winid)
-					
-					-- Only handle if click is in button window
-					if clicked_win == _G.LeftBarButtonWin then
-						local button = _G.LeftBarButtonMap[mouse_pos.line]
-						if button and button.action then
-							-- Schedule the action to avoid conflicts
-							vim.schedule(function()
-								button.action()
-							end)
-							return true -- Consume the event
-						end
-					end
-				end
-				return false -- Don't consume other events
-			end)
-		end
-	})
 end
 
 return M
