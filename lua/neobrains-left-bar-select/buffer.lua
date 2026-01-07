@@ -98,27 +98,47 @@ function M.setup_actions(buf, win, button_map)
 		desc = "Execute button action"
 	})
 
-	-- Store button_map and win globally for mouse handler
-	_G.LeftBarButtonMap = button_map
-	_G.LeftBarButtonWin = win
-
-	-- Set up global mouse handler immediately
-	vim.keymap.set("", "<LeftMouse>", function()
-		local mouse_pos = vim.fn.getmousepos()
-		local clicked_win = vim.fn.win_getid(mouse_pos.winid)
-		
-		-- Check if click is in our button window
-		if clicked_win == _G.LeftBarButtonWin then
-			local button = _G.LeftBarButtonMap[mouse_pos.line]
+	-- Handle mouse clicks in the button window
+	vim.api.nvim_buf_set_keymap(buf, "n", "<LeftMouse>", "", {
+		callback = function()
+			local mouse_pos = vim.fn.getmousepos()
+			local button = button_map[mouse_pos.line]
 			if button and button.action then
 				button.action()
-				return
+			end
+		end,
+		desc = "Execute button action on click"
+	})
+
+	-- Set up a window-local autocmd for mouse clicks when window is not focused
+	local mouse_group = vim.api.nvim_create_augroup("LeftBarMouse_" .. win, { clear = true })
+	vim.api.nvim_create_autocmd("WinLeave", {
+		group = mouse_group,
+		callback = function()
+			if vim.api.nvim_get_current_win() == win then
+				-- We're leaving the button window, set up a temporary global handler
+				local temp_group = vim.api.nvim_create_augroup("TempLeftBarMouse", { clear = true })
+				vim.keymap.set("", "<LeftMouse>", function()
+					local mouse_pos = vim.fn.getmousepos()
+					local clicked_win = vim.fn.win_getid(mouse_pos.winid)
+					
+					if clicked_win == win then
+						local button = button_map[mouse_pos.line]
+						if button and button.action then
+							button.action()
+							-- Clean up the temporary handler
+							vim.api.nvim_del_augroup_by_name("TempLeftBarMouse")
+							return
+						end
+					end
+					
+					-- Clean up and perform normal mouse behavior
+					vim.api.nvim_del_augroup_by_name("TempLeftBarMouse")
+					vim.cmd("normal! <LeftMouse>")
+				end, { once = true, desc = "Temporary mouse handler for button window" })
 			end
 		end
-		
-		-- If not our window, perform normal mouse behavior
-		-- vim.cmd("normal! <LeftMouse>")
-	end, { desc = "Global mouse handler for button clicks" })
+	})
 end
 
 return M
