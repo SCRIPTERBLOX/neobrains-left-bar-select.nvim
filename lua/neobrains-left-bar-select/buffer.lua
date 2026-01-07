@@ -116,7 +116,7 @@ function M.setup_actions(buf, win, button_map)
 		end
 		
 		-- If not our window, perform normal mouse behavior
-		vim.cmd("normal! <LeftMouse>")
+		-- vim.cmd("normal! <LeftMouse>")
 	end, { desc = "Global mouse handler for button clicks" })
 end
 
