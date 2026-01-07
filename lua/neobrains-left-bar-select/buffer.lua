@@ -124,8 +124,8 @@ function M.setup_actions(buf, win, button_map)
 			end
 		end
 		
-		-- Perform normal mouse behavior
-		vim.cmd("normal! <LeftMouse>")
+		-- Perform normal mouse behavior using feedkeys
+		vim.fn.feedkeys(vim.api.nvim_replace_termcodes("<LeftMouse>", true, false, true))
 	end, { desc = "Global mouse handler for button clicks" })
 end
 
