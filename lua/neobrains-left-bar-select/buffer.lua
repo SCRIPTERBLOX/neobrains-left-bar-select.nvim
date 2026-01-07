@@ -73,13 +73,14 @@ function M.create(user_config)
 	vim.api.nvim_buf_set_option(buf, "modifiable", true)
 	vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
 	vim.api.nvim_win_set_width(win, 5)
+	
+	-- Setup button action handlers before making buffer non-modifiable
+	M.setup_actions(buf, win, button_map)
+	
 	vim.api.nvim_buf_set_option(buf, "modifiable", false)
 	vim.api.nvim_buf_set_option(buf, "filetype", "left-bar")
 	vim.api.nvim_buf_set_option(buf, "buftype", "nofile")
 	vim.api.nvim_buf_set_name(buf, "left-bar")
-
-	-- Setup button action handlers
-	M.setup_actions(buf, win, button_map)
 
 	return buf
 end
