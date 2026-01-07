@@ -86,41 +86,32 @@ function M.create(user_config)
 end
 
 function M.setup_actions(buf, win, button_map)
-	-- Handle Enter key press
-	vim.api.nvim_buf_set_keymap(buf, "n", "<CR>", "", {
-		callback = function()
-			local cursor_line = vim.api.nvim_win_get_cursor(win)[1]
-			local button = button_map[cursor_line]
-			if button and button.action then
-				button.action()
-			end
-		end,
-		desc = "Execute button action"
-	})
-
-	-- Handle mouse clicks in the button window
-	vim.api.nvim_buf_set_keymap(buf, "n", "<LeftMouse>", "", {
-		callback = function()
-			local mouse_pos = vim.fn.getmousepos()
-			local button = button_map[mouse_pos.line]
-			if button and button.action then
-				button.action()
-			end
-		end,
-		desc = "Execute button action on click"
-	})
-
-	-- Store button data globally for mouse handling
+	-- Store button data globally for handling
 	_G.LeftBarButtonMap = button_map
 	_G.LeftBarButtonWin = win
-	_G.LeftBarTempHandlerActive = false
+	_G.LeftBarButtonBuf = buf
 
-	-- Set up a simple global mouse handler
-	vim.keymap.set("", "<LeftMouse>", function()
-		if _G.LeftBarTempHandlerActive then
-			return
+	-- Set up global Enter key handler
+	vim.keymap.set("", "<CR>", function()
+		local current_win = vim.api.nvim_get_current_win()
+		local current_buf = vim.api.nvim_get_current_buf()
+		
+		-- Check if we're in the button window
+		if current_win == _G.LeftBarButtonWin and current_buf == _G.LeftBarButtonBuf then
+			local cursor_line = vim.api.nvim_win_get_cursor(current_win)[1]
+			local button = _G.LeftBarButtonMap[cursor_line]
+			if button and button.action then
+				button.action()
+				return
+			end
 		end
 		
+		-- Perform normal Enter behavior
+		vim.cmd("normal! <CR>")
+	end, { desc = "Global Enter handler for button actions" })
+
+	-- Set up global mouse handler
+	vim.keymap.set("", "<LeftMouse>", function()
 		local mouse_pos = vim.fn.getmousepos()
 		local clicked_win = vim.fn.win_getid(mouse_pos.winid)
 		
