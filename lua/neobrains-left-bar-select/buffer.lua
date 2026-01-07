@@ -74,7 +74,7 @@ function M.create(user_config)
 	vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
 	vim.api.nvim_win_set_width(win, 5)
 	
-	-- Setup button action handlers before making buffer non-modifiable
+	-- Setup button action handlers while buffer is still modifiable
 	M.setup_actions(buf, win, button_map)
 	
 	vim.api.nvim_buf_set_option(buf, "modifiable", false)
