@@ -17,9 +17,9 @@ function M.gen_content(user_config, height)
 			
 			-- Map button to its lines (button spans 3 lines: top, middle, bottom)
 			local start_line = #content - 2
-			button_map[start_line] = v
-			button_map[start_line + 1] = v
-			button_map[start_line + 2] = v
+			button_map[start_line + 1] = v  -- Middle line (1-based)
+			button_map[start_line + 2] = v  -- Bottom line
+			button_map[start_line] = v      -- Top line
 			
 			y = y + 1
 		end
@@ -47,9 +47,9 @@ function M.gen_content(user_config, height)
 			
 			-- Map button to its lines (button spans 3 lines: top, middle, bottom)
 			local start_line = #content - 2
-			button_map[start_line] = v
-			button_map[start_line + 1] = v
-			button_map[start_line + 2] = v
+			button_map[start_line + 1] = v  -- Middle line (1-based)
+			button_map[start_line + 2] = v  -- Bottom line
+			button_map[start_line] = v      -- Top line
 			
 			y = y + 1
 		end
@@ -88,7 +88,7 @@ function M.setup_actions(buf, win, button_map)
 	-- Handle Enter key press
 	vim.api.nvim_buf_set_keymap(buf, "n", "<CR>", "", {
 		callback = function()
-			local cursor_line = vim.api.nvim_win_get_cursor(win)[1] + 1 -- Convert to 1-based
+			local cursor_line = vim.api.nvim_win_get_cursor(win)[1]
 			local button = button_map[cursor_line]
 			if button and button.action then
 				button.action()
@@ -101,28 +101,23 @@ function M.setup_actions(buf, win, button_map)
 	_G.LeftBarButtonMap = button_map
 	_G.LeftBarButtonWin = win
 
-	-- Global mouse handler that works regardless of focus
-	vim.api.nvim_create_autocmd("VimEnter", {
-		once = true,
-		callback = function()
-			vim.keymap.set("", "<LeftMouse>", function()
-				local mouse_pos = vim.fn.getmousepos()
-				local clicked_win = vim.fn.win_getid(mouse_pos.winid)
-				
-				-- Check if click is in our button window
-				if clicked_win == _G.LeftBarButtonWin then
-					local button = _G.LeftBarButtonMap[mouse_pos.line]
-					if button and button.action then
-						button.action()
-						return
-					end
-				end
-				
-				-- If not our window, perform normal mouse behavior
-				vim.cmd("normal! <LeftMouse>")
-			end, { desc = "Global mouse handler for button clicks" })
+	-- Set up global mouse handler immediately
+	vim.keymap.set("", "<LeftMouse>", function()
+		local mouse_pos = vim.fn.getmousepos()
+		local clicked_win = vim.fn.win_getid(mouse_pos.winid)
+		
+		-- Check if click is in our button window
+		if clicked_win == _G.LeftBarButtonWin then
+			local button = _G.LeftBarButtonMap[mouse_pos.line]
+			if button and button.action then
+				button.action()
+				return
+			end
 		end
-	})
+		
+		-- If not our window, perform normal mouse behavior
+		vim.cmd("normal! <LeftMouse>")
+	end, { desc = "Global mouse handler for button clicks" })
 end
 
 return M
